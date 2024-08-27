@@ -1,37 +1,21 @@
 import mongoose from 'mongoose';
 
-// Definindo o schema para o filme
 const movieSchema = new mongoose.Schema({
-  tmdb_id: {
-    type: Number,
-    unique: true, // Garante que o TMDB ID seja único
-  },
-  title: {
-    type: String,
-    required: true,
-  },
-  overview: {
-    type: String,
-    default: '',
-  },
-  release_date: {
-    type: Date,
-    default: null,
-  },
-  poster_path: {
-    type: String,
-    default: '',
-  },
-  vote_average: {
-    type: Number,
-    min: 0,
-    max: 10,
-  },
-  // Adicione outros campos se necessário
-}, {
-  timestamps: true
+  adult: { type: Boolean, default: false },
+  backdrop_path: { type: String },
+  genre_ids: [{ type: Number }],
+  id: { type: Number, unique: true },
+  original_language: { type: String },
+  original_title: { type: String },
+  overview: { type: String },
+  popularity: { type: Number },
+  poster_path: { type: String },
+  release_date: { type: Date },
+  title: { type: String },
+  video: { type: Boolean, default: false },
+  vote_average: { type: Number },
+  vote_count: { type: Number }
 });
 
-// Registrando e exportando o modelo
 const Movie = mongoose.model('Movie', movieSchema);
 export default Movie;
