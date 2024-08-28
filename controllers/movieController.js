@@ -34,6 +34,24 @@ const searchMovieData = async (query, page) => {
     throw new Error(error.response ? error.response.data.message : error.message);
   }
 };
+
+const getMovieDetails = async (movieId) => {
+  try {
+    const response = await axios.get(
+      `${process.env.TMDB_URL}/movie/${movieId}?language=en-US`,
+      {
+        headers: {
+          accept: 'application/json',
+          Authorization: `Bearer ${process.env.TMDB_TOKEN}`
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response ? error.response.data.message : error.message);
+  }
+};
+
 export const getPopularMovies = async (req, res) => {
   const page = req.query.page || 1;
   try {
@@ -88,11 +106,14 @@ export const searchMovies = async (req, res) => {
 export const getFavorites = async (req, res) => {
   try {
     const { id } = req.user;
-    const user = await User.findById(id).populate('favorites');
+    const user = await User.findById(id);
     if (!user) {
       return res.status(400).json({ message: 'Usuário não encontrado!' });
     }
-    res.json(user.favorites);
+    const movieDetailsPromises = user.favorites.map(movieId => getMovieDetails(movieId));
+    const movies = await Promise.all(movieDetailsPromises);
+
+    res.json(movies);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
