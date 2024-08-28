@@ -142,19 +142,22 @@ export const addFavorite = async (req, res) => {
 };
 
 export const removeFavorite = async (req, res) => {
-  const { movieId } = req.body;
+  const { movieId } = req.params; // Obtendo o movieId dos parâmetros da URL
   try {
-    const { id } = req.user;
+    const { id } = req.user; // Supondo que req.user é preenchido por um middleware de autenticação
     const user = await User.findById(id);
+
     if (!user) {
       return res.status(400).json({ message: 'Usuário não encontrado!' });
     }
 
+    // Filtra a lista de favoritos para remover o filme especificado
     user.favorites = user.favorites.filter(fav => fav.toString() !== movieId);
     await user.save();
 
-    res.json({ message: 'Filme removido dos favoritos!' });
+    res.status(204).send(); // Resposta bem-sucedida com código 204
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+

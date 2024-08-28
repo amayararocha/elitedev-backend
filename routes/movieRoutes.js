@@ -20,6 +20,6 @@ router.get('/now_playing', authenticateToken, getNowPlayingMovies);
 router.get('/search', authenticateToken, searchMovies);
 router.get('/favorites', authenticateToken, getFavorites);
 router.post('/favorites', authenticateToken, addFavorite);
-router.delete('/favorites', authenticateToken, removeFavorite);
+router.delete('/favorites/:movieId', authenticateToken, removeFavorite);
 
 export default router;
